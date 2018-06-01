@@ -2,12 +2,18 @@
 /*
  * Plugin Name: akwi-sage-arve-wordpress-plugin
  */
+
+include_once(dirname(__DIR__)."/akwi-sage-arve-wordpress-plugin/textes/news/post_main.php");
+
 add_action ( 'wp_dashboard_setup', 'akwi_sage_arve_dashboard_widgets' );
 function akwi_sage_arve_dashboard_widgets() {
 	wp_add_dashboard_widget ( 'akwi_sage_arve_dashboard_site_widget', 'Akwi site', 'akwi_sage_arve_dashboard_site_widget' );
 }
+
 function akwi_sage_arve_dashboard_site_widget() {
 	echo '<a href="' . admin_url ( 'admin-post.php?action=build_akwi_sage_arve_site' ) . '">Créer site Arve</a>';
+	echo '<br/>';
+	echo '<a href="' . admin_url ( 'admin-post.php?action=add_akwi_sage_arve_news' ) . '">Ajouter les news</a>';
 }
 
 // Schéma d'Aménagement de Gestion
@@ -17,6 +23,7 @@ function akwi_sage_arve_setSlogan() {
 function akwi_sage_arve_setTitle() {
 	update_option ( 'blogname', 'SAGE Arve' );
 }
+
 function akwi_sage_arve_addLogo() {
 	$custom_logo_id = get_theme_mod ( 'custom_logo' );
 	$image = wp_get_attachment_image_src ( $custom_logo_id, 'full' );
@@ -25,6 +32,9 @@ function akwi_sage_arve_addLogo() {
 			akwi_commons_addLogo ( ABSPATH . 'wp-content/plugins/akwi-sage-arve-wordpress-plugin/images/logo.png' );
 			wp_delete_attachment ( $custom_logo_id, true );
 		}
+	}
+	else {
+		akwi_commons_addLogo ( ABSPATH . 'wp-content/plugins/akwi-sage-arve-wordpress-plugin/images/logo.png' );
 	}
 }
 
@@ -41,13 +51,30 @@ function contains($needle, $haystack) {
 }
 function akwi_sage_arve_setHeaderImage() {
 	set_theme_mod( 'header_image',plugin_dir_url( __FILE__ ) . '/images/arve-header.jpg');
-// 	$args = array(
-// 			'width'         => 1600,
-// 			'height'        => 300,
-// 			'default-image' => plugin_dir_url( __FILE__ ) . '/images/arve-header.jpg',
-// 	);
-// 	add_theme_support( 'custom-header', $args );
 }
+
+function akwi_sage_arve_addNews() {
+	
+	$args = array(
+			'posts_per_page'   => 50,
+			'offset'           => 0,
+			'orderby'          => 'date',
+			'order'            => 'DESC',
+			'post_type'        => 'post',
+			'post_status'      => 'publish',
+			'suppress_filters' => true
+	);
+	
+	$posts = get_posts($args);
+	foreach ($posts as $post) {
+		wp_delete_post( $post->ID, true);
+	}
+	
+	akwi_sage_arve_addNewsMain();
+	wp_redirect ( admin_url ( 'index.php' ) );
+	exit ();
+}
+
 function akwi_sage_arve_buildSite() {
 	akwi_sage_arve_setSlogan ();
 	akwi_sage_arve_setTitle ();
@@ -55,15 +82,85 @@ function akwi_sage_arve_buildSite() {
 	akwi_sage_arve_addFavicon();
 	akwi_sage_arve_setColor ();
 	akwi_sage_arve_setHeaderImage ();
-	// addLogo();
-	// addFavicon();
-	// addWelcomePage();
-	// setWelcomePage();
+	akwi_commons_addWelcomePage();
+	akwi_sage_arve_setWelcomePageContent();
+	akwi_sage_arve_generateMenu();
+	
 	wp_redirect ( admin_url ( 'index.php' ) );
 	exit ();
 }
 
+
+function akwi_sage_arve_setWelcomePageContent(){
+	$content = file_get_contents(ABSPATH . 'wp-content/plugins/akwi-sage-arve-wordpress-plugin/textes/introduction.txt');
+	$new_page_title = 'bienvenue';
+	$new_page_template = 'template-home.php';
+	$page_check = get_page_by_title($new_page_title);
+		
+	$edited_page = array(
+		'ID'    => $page_check->ID,
+		'post_content' => $content
+	);
+		wp_update_post($edited_page);
+}
+
+function akwi_sage_arve_generateMenu() {
+	
+	$locations = get_theme_mod( 'nav_menu_locations' );
+	llog(implode("|",$locations));
+	llog(($locations["0"]));
+	llog(($locations["14"]));
+	
+	$menuname = 'primaire';
+	$menulocation = 'Primary';
+	// Does the menu exist already?
+	$menu_exists = wp_get_nav_menu_object( $menuname );
+	if( !$menu_exists){
+		$menu_id = wp_create_nav_menu($menuname);
+		// Set up default BuddyPress links and add them to the menu.
+		wp_update_nav_menu_item($menu_id, 0, array(
+				'menu-item-title' =>  __('Home'),
+				'menu-item-classes' => 'home',
+				'menu-item-url' => home_url( '/' ),
+				'menu-item-status' => 'publish'));
+		
+		$parent_item = wp_update_nav_menu_item($menu_id, 0, array(
+				'menu-item-title' =>  "La CLE",
+				'menu-item-classes' => 'activity',
+				'menu-item-url' => home_url( '/activity/' ),
+				'menu-item-status' => 'publish'));
+		
+		wp_update_nav_menu_item($menu_id, 0, array(
+				'menu-item-title' =>  __('Sub Item Page'),
+				'menu-item-url' => home_url( '/sub-item-page/' ),
+				'menu-item-status' => 'publish',
+				'menu-item-parent-id' => $parent_item)
+				);
+		
+		wp_update_nav_menu_item($menu_id, 0, array(
+				'menu-item-title' =>  "Enquête publique",
+				'menu-item-classes' => 'activity',
+				'menu-item-url' => home_url( '/activity/' ),
+				'menu-item-status' => 'publish'));
+		
+		wp_update_nav_menu_item($menu_id, 0, array(
+				'menu-item-title' =>  "Thématique",
+				'menu-item-classes' => 'activity',
+				'menu-item-url' => home_url( '/activity/' ),
+				'menu-item-status' => 'publish'));
+		
+		if( !has_nav_menu( $menulocation) ){
+			$locations = get_theme_mod('nav_menu_locations');
+			$locations[$menulocation] = $menu_id;
+			set_theme_mod( 'nav_menu_locations', $locations );
+		}
+	}
+}
+
+
+
 add_action ( 'admin_post_build_akwi_sage_arve_site', 'akwi_sage_arve_buildSite' );
+add_action ( 'admin_post_add_akwi_sage_arve_news', 'akwi_sage_arve_addNews');
 
 
 add_action('admin_menu', function() {

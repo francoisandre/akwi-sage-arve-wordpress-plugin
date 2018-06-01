@@ -1,0 +1,11 @@
+<?php
+function akwi_sage_arve_addPost0(){
+$my_post = array(
+'post_title'    => wp_strip_all_tags("Fin de l’enquête publique… et après ?"),
+'post_content'    => "<div class='singleBloc'>   <div class='dateSingle'>   Le 8 mars 2018  </div>   <h3>Fin de l'enquête publique</h3>   <div class='texteSingle'>   <h3>Clôture de l’enquête publique</h3>   <p>L’enquête publique du SAGE de l’Arve a été officiellement clôturée le mardi 16 janvier 2018 à la réception des registres d’enquête publique par le commissaire enquêteur.</p>   <p>Afin de tenir compte de l’ensemble des observations reçues et des délibérations prises par les collectivités consultées, le commissaire enquêteur a remis un procès-verbal de synthèse des observations recueillies au cours de l’enquête publique : <a href='http://www.sage-arve.fr/wp-content/uploads/2018/03/PV-synthèse-CLE-Sage-Arve-YC-2018-01-25.pdf'>cliquez ici pour consulter le procès-verbal de synthèse</a>.</p>   <p>Conformément à la réglementation en vigueur&nbsp;(article R.123-18 du code de l’environnement), le président de la CLE a remis un mémoire exposant ses observations en réponse à ce procès-verbal: cliquez ici pour consulter les observations du Président de la CLE.</p>   <p>Le commissaire enquêteur a tenu compte de ces observations dans la rédaction de son rapport : <a href='http://www.sage-arve.fr/wp-content/uploads/2018/03/Rapport_comm_enq_19_fevrier_2018.pdf'>cliquez ici pour consulter le rapport du commissaire enquêteur</a>.</p>   <p>En conclusion, le commissaire a émis un avis favorable au projet de SAGE de l’Arve, compte tenu des modifications proposées par le président de la CLE : <a href='http://www.sage-arve.fr/wp-content/uploads/2018/03/Conclusions_comm_enqu_19_fevier_2018.pdf'>cliquez ici pour consulter les conclusions du commissaire enquêteur</a>.</p>   <h3>… Et après ?</h3>   <p>Comme annoncé par le Président de la CLE dans sa réponse au procès-verbal du commissaire enquêteur, la CLE se réunira pour modifier le projet de SAGE avant approbation définitive par arrêté préfectoral, prévue en juin 2018.</p>  </div>   <div class='both'></div>  </div>",
+'post_status'   => 'publish',
+'post_date'    => '2018-03-08'
+);
+wp_insert_post( $my_post, true );
+}
+?>

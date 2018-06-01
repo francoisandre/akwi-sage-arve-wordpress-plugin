@@ -1,0 +1,20 @@
+<?php
+include_once(dirname(__DIR__).'\news\post_0.php');
+include_once(dirname(__DIR__).'\news\post_1.php');
+include_once(dirname(__DIR__).'\news\post_2.php');
+include_once(dirname(__DIR__).'\news\post_3.php');
+include_once(dirname(__DIR__).'\news\post_4.php');
+include_once(dirname(__DIR__).'\news\post_5.php');
+include_once(dirname(__DIR__).'\news\post_6.php');
+include_once(dirname(__DIR__).'\news\post_7.php');
+function akwi_sage_arve_addNewsMain() {
+akwi_sage_arve_addPost0();
+akwi_sage_arve_addPost1();
+akwi_sage_arve_addPost2();
+akwi_sage_arve_addPost3();
+akwi_sage_arve_addPost4();
+akwi_sage_arve_addPost5();
+akwi_sage_arve_addPost6();
+akwi_sage_arve_addPost7();
+}
+?>
